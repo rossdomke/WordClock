@@ -15,10 +15,10 @@ void BrightnessProgram(GlobalState &_state){
       _state.SetBrightness(_state.GetBrightness() - stepSize);
   }
   
-  uint8_t limit = ((double)_state.Height / (max-min)) * (max - (double)_state.GetBrightness());
+  uint8_t level = ((double)_state.Height / (max-min)) * (max - (double)_state.GetBrightness());
   EVERY_N_MILLISECONDS(1500){
-    Serial.print("limit: ");
-    Serial.println(limit);
+    Serial.print("level: ");
+    Serial.println(level);
   }
   if(_state.RunAnimation){
     //TODO: Add button clicks to brightness program
@@ -26,7 +26,7 @@ void BrightnessProgram(GlobalState &_state){
     for(uint8_t x = 0; x < _state.Width; x++){
       for(uint8_t y = 0; y < _state.Height; y++){
         //sin((pi/22)x) * 2 + 3
-        int8_t sinY = limit + mag - sin(((2* PI) / 20) * x) * mag;    
+        int8_t sinY = level + mag - sin(((2* PI) / 20) * x) * mag;    
 
         if(y >= sinY)
           _state.Mask[_state.XY(x,y)] = true;
