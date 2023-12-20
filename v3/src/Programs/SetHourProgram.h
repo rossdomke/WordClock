@@ -1,11 +1,12 @@
-#ifndef Program_h
-#define Program_h
+#ifndef SetHourProgram_h
+#define SetHourProgram_h
+#include "Program.h"
 class State;
 
-class Program
+class SetHourProgram : public Program
 {
 public:
-  Program(){};
+  SetHourProgram(){};
   virtual void ClickHandler(State&);
   virtual void DoubleClickHandler(State&);
   virtual void TripleClickHandler(State&);

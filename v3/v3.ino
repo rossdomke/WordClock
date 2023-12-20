@@ -39,7 +39,6 @@ void setup() {
 
   //State Setup
   AppState = new State();
-  AppState->ActiveProgram = new Program();
 }
 
 
@@ -65,7 +64,7 @@ void BtnEnc_LongClickDetectedHandler(Button2& btn){
 static int RotaryPos = 0;
 void RotaryInterupt()
 {
-  Encoder->tick(); // just call tick() to check the state.
+  Encoder->tick();
   int newPos = Encoder->getPosition();
   if (RotaryPos != newPos) {
     if(RotaryEncoder::Direction::CLOCKWISE == Encoder->getDirection()){

@@ -1,11 +1,12 @@
-#ifndef Program_h
-#define Program_h
+#ifndef SetMinProgram_h
+#define SetMinProgram_h
+#include "Program.h"
 class State;
 
-class Program
+class SetMinProgram : public Program
 {
 public:
-  Program(){};
+  SetMinProgram(){};
   virtual void ClickHandler(State&);
   virtual void DoubleClickHandler(State&);
   virtual void TripleClickHandler(State&);

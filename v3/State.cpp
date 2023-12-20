@@ -1,5 +1,7 @@
 #include "State.h"
+#include "src/Programs/WordClockProgram.h"
+
 State::State(){
-    TestVal = 1;
+    ActiveProgram = new WordClockProgram();
 }
 
