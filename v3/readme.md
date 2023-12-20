@@ -2,3 +2,12 @@
 
 ## Install ESP32 Drivers for Board
   - [CP210x USB to UART COM Port (VCP) Drivers](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers?tab=overview) 
+
+## Board Used
+  - [Seeedstudio XAIO SAMD21](https://wiki.seeedstudio.com/Seeeduino-XIAO/)
+  - [Seeed SAMD Board Library](// https://files.seeedstudio.com/arduino/package_seeeduino_boards_index.json)
+
+## Arduino Libraries Needed
+  - [Button2]
+  - [RotaryEncoder]
+  - [FastLED]
