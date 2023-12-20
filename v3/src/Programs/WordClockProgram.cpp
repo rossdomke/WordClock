@@ -3,33 +3,37 @@
 #include <Arduino.h>
 
 #include "SetHourProgram.h"
-
+//------------- Click Handlers ----------------//
 void WordClockProgram::ClickHandler(State &state)
 {
-  Serial.println("WordClockProgram click");
+  Serial.println("WordClockProgram: click");
 }
 void WordClockProgram::DoubleClickHandler(State &state)
 {
-  Serial.println("WordClockProgram double click");
+  Serial.println("WordClockProgram: double click");
 }
 void WordClockProgram::TripleClickHandler(State &state)
 {
-  Serial.println("WordClockProgram triple click");
+  Serial.println("WordClockProgram: triple click");
 }
 void WordClockProgram::LongClickHandler(State &state)
 {
-  Serial.println("WordClockProgram long click");
+  Serial.println("WordClockProgram: long click");
   state.ActiveProgram = new SetHourProgram();
 }
+
+//------------- Rotary Handlers ----------------//
 void WordClockProgram::RotaryUpHandler(State &state)
 {
-  Serial.println("WordClockProgram rotary up");
+  Serial.println("WordClockProgram: rotary up");
 }
 void WordClockProgram::RotaryDownHandler(State &state)
 {
-  Serial.println("WordClockProgram rotary down");
+  Serial.println("WordClockProgram: rotary down");
 }
+
+//----------------- Program --------------------//
 void WordClockProgram::Run(State &state)
 {
-  Serial.println("WordClockProgram rum");
+  Serial.println("WordClockProgram: rum");
 }

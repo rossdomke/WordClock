@@ -16,48 +16,50 @@ Button2 BtnEnc;
 RotaryEncoder *Encoder = nullptr;
 State *AppState = nullptr;
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   delay(50);
 
-  //BtnEnc Setup
+  // BtnEnc Setup
   BtnEnc.begin(P_ENC_BTN, INPUT_PULLUP, false);
-  //BtnEnc Handlers
+  // BtnEnc Handlers
   BtnEnc.setClickHandler(BtnEnc_ClickHandler);
   BtnEnc.setDoubleClickHandler(BtnEnc_DoubleClickHandler);
   BtnEnc.setTripleClickHandler(BtnEnc_TripleClickHandler);
   BtnEnc.setLongClickDetectedHandler(BtnEnc_LongClickDetectedHandler);
-  //BtnEnc Settings
+  // BtnEnc Settings
   BtnEnc.setLongClickDetectedRetriggerable(false);
   BtnEnc.setLongClickTime(750);
 
-  //Rotary Encoder Setup
+  // Rotary Encoder Setup
   Encoder = new RotaryEncoder(P_ENC_A, P_ENC_B, RotaryEncoder::LatchMode::FOUR3);
   attachInterrupt(digitalPinToInterrupt(P_ENC_A), RotaryInterupt, CHANGE);
   attachInterrupt(digitalPinToInterrupt(P_ENC_B), RotaryInterupt, CHANGE);
 
-
-  //State Setup
+  // State Setup
   AppState = new State();
 }
 
-
-
-void loop() {
+void loop()
+{
   BtnEnc.loop();
 }
 
-
-void BtnEnc_ClickHandler(Button2& btn){
+void BtnEnc_ClickHandler(Button2 &btn)
+{
   AppState->ActiveProgram->ClickHandler(*AppState);
 }
-void BtnEnc_DoubleClickHandler(Button2& btn){
+void BtnEnc_DoubleClickHandler(Button2 &btn)
+{
   AppState->ActiveProgram->DoubleClickHandler(*AppState);
 }
-void BtnEnc_TripleClickHandler(Button2& btn){
+void BtnEnc_TripleClickHandler(Button2 &btn)
+{
   AppState->ActiveProgram->TripleClickHandler(*AppState);
 }
-void BtnEnc_LongClickDetectedHandler(Button2& btn){
+void BtnEnc_LongClickDetectedHandler(Button2 &btn)
+{
   AppState->ActiveProgram->LongClickHandler(*AppState);
 }
 
@@ -66,10 +68,14 @@ void RotaryInterupt()
 {
   Encoder->tick();
   int newPos = Encoder->getPosition();
-  if (RotaryPos != newPos) {
-    if(RotaryEncoder::Direction::CLOCKWISE == Encoder->getDirection()){
+  if (RotaryPos != newPos)
+  {
+    if (RotaryEncoder::Direction::CLOCKWISE == Encoder->getDirection())
+    {
       AppState->ActiveProgram->RotaryUpHandler(*AppState);
-    }else{
+    }
+    else
+    {
       AppState->ActiveProgram->RotaryDownHandler(*AppState);
     }
     RotaryPos = newPos;

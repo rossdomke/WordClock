@@ -11,6 +11,7 @@ public:
   State();
   Program *ActiveProgram;
   bool *Mask;
+
 private:
   uint8_t Brightness;
   uint8_t PaletteIdx;

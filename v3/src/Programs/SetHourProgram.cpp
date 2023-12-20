@@ -4,35 +4,40 @@
 
 #include "SetMinProgram.h"
 
+//------------- Click Handlers ----------------//
 void SetHourProgram::ClickHandler(State &state)
 {
-  Serial.println("SetHourProgram click");
+  Serial.println("SetHourProgram: click");
   state.ActiveProgram = new SetMinProgram();
 }
 void SetHourProgram::DoubleClickHandler(State &state)
 {
-  Serial.println("SetHourProgram double click");
+  Serial.println("SetHourProgram: double click");
   ClickHandler(state);
 }
 void SetHourProgram::TripleClickHandler(State &state)
 {
-  Serial.println("SetHourProgram triple click");
+  Serial.println("SetHourProgram: triple click");
   ClickHandler(state);
 }
 void SetHourProgram::LongClickHandler(State &state)
 {
-  Serial.println("SetHourProgram long click");
+  Serial.println("SetHourProgram: long click");
   ClickHandler(state);
 }
+
+//------------- Rotary Handlers ----------------//
 void SetHourProgram::RotaryUpHandler(State &state)
 {
-  Serial.println("SetHourProgram rotary up");
+  Serial.println("SetHourProgram: rotary up");
 }
 void SetHourProgram::RotaryDownHandler(State &state)
 {
-  Serial.println("SetHourProgram rotary down");
+  Serial.println("SetHourProgram: rotary down");
 }
+
+//----------------- Program --------------------//
 void SetHourProgram::Run(State &state)
 {
-  Serial.println("SetHourProgram rum");
+  Serial.println("SetHourProgram: rum");
 }

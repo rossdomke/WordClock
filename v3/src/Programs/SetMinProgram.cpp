@@ -4,35 +4,40 @@
 
 #include "WordClockProgram.h"
 
+//------------- Click Handlers ----------------//
 void SetMinProgram::ClickHandler(State &state)
 {
-  Serial.println("SetMinProgram click");
+  Serial.println("SetMinProgram: click");
   state.ActiveProgram = new WordClockProgram();
 }
 void SetMinProgram::DoubleClickHandler(State &state)
 {
-  Serial.println("SetMinProgram double click");
+  Serial.println("SetMinProgram: double click");
   ClickHandler(state);
 }
 void SetMinProgram::TripleClickHandler(State &state)
 {
-  Serial.println("SetMinProgram triple click");
+  Serial.println("SetMinProgram: triple click");
   ClickHandler(state);
 }
 void SetMinProgram::LongClickHandler(State &state)
 {
-  Serial.println("SetMinProgram long click");
+  Serial.println("SetMinProgram: long click");
   ClickHandler(state);
 }
+
+//------------- Rotary Handlers ----------------//
 void SetMinProgram::RotaryUpHandler(State &state)
 {
-  Serial.println("SetMinProgram rotary up");
+  Serial.println("SetMinProgram: rotary up");
 }
 void SetMinProgram::RotaryDownHandler(State &state)
 {
-  Serial.println("SetMinProgram rotary down");
+  Serial.println("SetMinProgram: rotary down");
 }
+
+//----------------- Program --------------------//
 void SetMinProgram::Run(State &state)
 {
-  Serial.println("SetMinProgram rum");
+  Serial.println("SetMinProgram: rum");
 }
