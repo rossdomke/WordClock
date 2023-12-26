@@ -39,5 +39,4 @@ void SetHourProgram::RotaryDownHandler(State &state)
 //----------------- Program --------------------//
 void SetHourProgram::Run(State &state)
 {
-  Serial.println("SetHourProgram: rum");
 }

@@ -33,5 +33,4 @@ void Program::RotaryDownHandler(State &state)
 //----------------- Program --------------------//
 void Program::Run(State &state)
 {
-  Serial.println("program: rum");
 }

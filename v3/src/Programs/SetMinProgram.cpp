@@ -39,5 +39,4 @@ void SetMinProgram::RotaryDownHandler(State &state)
 //----------------- Program --------------------//
 void SetMinProgram::Run(State &state)
 {
-  Serial.println("SetMinProgram: rum");
 }

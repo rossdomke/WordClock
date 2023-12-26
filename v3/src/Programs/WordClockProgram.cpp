@@ -26,14 +26,17 @@ void WordClockProgram::LongClickHandler(State &state)
 void WordClockProgram::RotaryUpHandler(State &state)
 {
   Serial.println("WordClockProgram: rotary up");
+  state.ChangeBrightness(5);
+  Serial.println(state.GetBrightness());
 }
 void WordClockProgram::RotaryDownHandler(State &state)
 {
   Serial.println("WordClockProgram: rotary down");
+  state.ChangeBrightness(-5);
+  Serial.println(state.GetBrightness());
 }
 
 //----------------- Program --------------------//
 void WordClockProgram::Run(State &state)
 {
-  Serial.println("WordClockProgram: rum");
 }
