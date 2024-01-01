@@ -8,6 +8,7 @@
   - [Seeed SAMD Board Library](// https://files.seeedstudio.com/arduino/package_seeeduino_boards_index.json)
 
 ## Arduino Libraries Needed
-  - [Button2]
-  - [RotaryEncoder]
-  - [FastLED]
+  - [Button2 - Lennart Hennings](https://github.com/LennartHennigs/Button2)
+  - [RotaryEncoder - Matthias Hertel](https://www.mathertel.de/Arduino/RotaryEncoderLibrary.aspx)
+  - [FastLED - Daniel Garcia](https://github.com/FastLED/FastLED)
+  - [DS3231 - Andrew Wickert](https://github.com/NorthernWidget/DS3231)

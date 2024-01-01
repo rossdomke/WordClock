@@ -2,31 +2,39 @@
 #include <Button2.h>
 #include <RotaryEncoder.h>
 #include <FastLED.h>
+#include <DS3231.h>
 
 #include "State.h"
 #include "src/Programs/Program.h"
+#include "src/Helpers.h"
+#include "src/ColorAnimations.h"
+#include "src/ColorPallettes.h"
 
 FASTLED_USING_NAMESPACE
 #define WIDTH 3
 #define HEIGHT 3
 
-const int P_ENC_BTN = 10;
-const int P_ENC_A = 2;
-const int P_ENC_B = 1;
+const int P_ENC_BTN = 9;
+const int P_ENC_A = 8;
+const int P_ENC_B = 7;
 const int P_SCL = 5;
 const int P_SDA = 4;
-const int P_LED = 3;
+const int P_LED = 10;
 
 Button2 BtnEnc;
 RotaryEncoder *Encoder = nullptr;
 State *AppState = nullptr;
-CRGB leds[WIDTH * HEIGHT]; 
+CRGB leds[WIDTH * HEIGHT];
 bool mask[WIDTH * HEIGHT];
+DS3231 rtc;
 
 void setup()
 {
   Serial.begin(115200);
-  delay(50);
+  delay(100);
+
+  // RTC Setup
+  Wire.begin();
 
   // BtnEnc Setup
   BtnEnc.begin(P_ENC_BTN, INPUT_PULLUP, false);
@@ -45,7 +53,7 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(P_ENC_A), RotaryInterupt, CHANGE);
   attachInterrupt(digitalPinToInterrupt(P_ENC_B), RotaryInterupt, CHANGE);
 
-  AppState = new State(WIDTH, HEIGHT, leds, mask);
+  AppState = new State(WIDTH, HEIGHT, leds, mask, &rtc);
 
   // Setup FastLED
   FastLED.addLeds<WS2812B, P_LED, GRB>(AppState->LEDs, AppState->GetNumOfLEDs()).setCorrection(TypicalLEDStrip);
@@ -58,13 +66,18 @@ ulong milliDiff = 0;
 void loop()
 {
   BtnEnc.loop();
+  EVERY_N_MILLISECONDS(50)
+  {
+    AppState->AdvanceFrame();
+  }
   beforeMillis = millis();
   AppState->ActiveProgram->Run(*AppState);
-
-  AppState->LEDs[0] = CRGB::Purple;
-  for (int x = 1; x < 9; x++)
+  for (uint8_t x = 0; x < AppState->GetWidth(); x++)
   {
-    AppState->LEDs[x] = CRGB::White;
+    for (uint8_t y = 0; y < AppState->GetHeight(); y++)
+    {
+      AppState->LEDs[XY(x, y, AppState->GetWidth(), AppState->GetHeight())] = CHSV(AppState->GetFrame() + x * 50 + y * 50, 255, 255);
+    }
   }
   FastLED.setBrightness(AppState->GetBrightness());
   FastLED.show();

@@ -1,6 +1,7 @@
 #include "SetHourProgram.h"
 #include "../../State.h"
 #include <Arduino.h>
+#include <FastLED.h>
 
 #include "SetMinProgram.h"
 
@@ -29,14 +30,18 @@ void SetHourProgram::LongClickHandler(State &state)
 //------------- Rotary Handlers ----------------//
 void SetHourProgram::RotaryUpHandler(State &state)
 {
-  Serial.println("SetHourProgram: rotary up");
+  state.Time_SetRTC(60);
 }
 void SetHourProgram::RotaryDownHandler(State &state)
 {
-  Serial.println("SetHourProgram: rotary down");
+  state.Time_SetRTC(-60);
 }
 
 //----------------- Program --------------------//
 void SetHourProgram::Run(State &state)
 {
+  EVERY_N_MILLISECONDS(100)
+  {
+    Serial.println(state.Time_GetHour());
+  }
 }

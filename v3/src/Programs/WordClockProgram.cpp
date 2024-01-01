@@ -1,6 +1,7 @@
 #include "WordClockProgram.h"
 #include "../../State.h"
 #include <Arduino.h>
+#include <FastLED.h>
 
 #include "SetHourProgram.h"
 //------------- Click Handlers ----------------//
@@ -39,4 +40,11 @@ void WordClockProgram::RotaryDownHandler(State &state)
 //----------------- Program --------------------//
 void WordClockProgram::Run(State &state)
 {
+  EVERY_N_SECONDS(1)
+  {
+    state.Time_FromRTC();
+    Serial.print(state.Time_GetHour());
+    Serial.print(":");
+    Serial.println(state.Time_GetMin());
+  }
 }
