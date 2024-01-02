@@ -2,6 +2,8 @@
 
 #include "State.h"
 #include "src/Programs/WordClockProgram.h"
+#include "src/ColorAnimations.h"
+#include "src/ColorPallettes.h"
 
 State::State(uint8_t width, uint8_t height, CRGB *leds, bool *mask, DS3231 *rtc)
 {
@@ -12,6 +14,10 @@ State::State(uint8_t width, uint8_t height, CRGB *leds, bool *mask, DS3231 *rtc)
   LEDs = leds;
   RealTimeClock = rtc;
   Speed = 2;
+  StepSize = 30;
+  Frame = 0;
+  ColorAnimationIdx = 0;
+  PaletteIdx = 0;
   ActiveProgram = new WordClockProgram();
 }
 
@@ -77,4 +83,57 @@ uint8_t State::GetWidth()
 uint8_t State::GetHeight()
 {
   return Height;
+}
+uint8_t State::GetStepSize()
+{
+  return StepSize;
+}
+ColorAnimationFunc State::GetColorAnimation()
+{
+  return ColorAnimations[ColorAnimationIdx];
+}
+
+void State::SetColorAnimation(int8_t direction)
+{
+  uint8_t maxIdx = sizeof(ColorAnimations) / sizeof(ColorAnimationFunc);
+  if (direction < 0)
+  {
+    if (ColorAnimationIdx == 0)
+    {
+      ColorAnimationIdx = maxIdx;
+    }
+    else
+    {
+      ColorAnimationIdx -= direction;
+    }
+  }
+  else
+  {
+    ColorAnimationIdx += direction;
+    ColorAnimationIdx = ColorAnimationIdx % maxIdx;
+  }
+}
+CRGBPalette16 State::GetColorPalette()
+{
+  return ColorPalettes[PaletteIdx];
+}
+void State::SetColorPalette(int8_t direction)
+{
+  uint8_t maxIdx = sizeof(ColorPalettes) / sizeof(CRGBPalette16);
+  if (direction < 0)
+  {
+    if (PaletteIdx == 0)
+    {
+      PaletteIdx = maxIdx;
+    }
+    else
+    {
+      PaletteIdx -= direction;
+    }
+  }
+  else
+  {
+    PaletteIdx += direction;
+    PaletteIdx = PaletteIdx % maxIdx;
+  }
 }

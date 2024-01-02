@@ -32,6 +32,7 @@ void setup()
 {
   Serial.begin(115200);
   delay(100);
+  debug("Wordclock Startup");
 
   // RTC Setup
   Wire.begin();
@@ -72,11 +73,14 @@ void loop()
   }
   beforeMillis = millis();
   AppState->ActiveProgram->Run(*AppState);
+  ColorAnimationFunc clrAnimation = AppState->GetColorAnimation();
+  CRGBPalette16 palette = AppState->GetColorPalette();
   for (uint8_t x = 0; x < AppState->GetWidth(); x++)
   {
     for (uint8_t y = 0; y < AppState->GetHeight(); y++)
     {
-      AppState->LEDs[XY(x, y, AppState->GetWidth(), AppState->GetHeight())] = CHSV(AppState->GetFrame() + x * 50 + y * 50, 255, 255);
+      // AppState->LEDs[XY(x, y, AppState->GetWidth(), AppState->GetHeight())] = CHSV(AppState->GetFrame() + x * 50 + y * 50, 255, 255);
+      AppState->LEDs[XY(x, y, AppState->GetWidth(), AppState->GetHeight())] = clrAnimation(palette, AppState->GetFrame(), AppState->GetStepSize(), x, y);
     }
   }
   FastLED.setBrightness(AppState->GetBrightness());
@@ -84,9 +88,9 @@ void loop()
   afterMillis = millis();
   if (afterMillis - beforeMillis > 100)
   {
-    Serial.print("!!!WARNING!!! Active Program took too long: ");
-    Serial.print(afterMillis - beforeMillis);
-    Serial.println("ms");
+    debug("!!!WARNING!!! Active Program took too long: ");
+    debug(afterMillis - beforeMillis);
+    debugln("ms");
   }
 }
 

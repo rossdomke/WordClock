@@ -1,5 +1,6 @@
 #include "WordClockProgram.h"
 #include "../../State.h"
+#include "../helpers.h"
 #include <Arduino.h>
 #include <FastLED.h>
 
@@ -7,34 +8,30 @@
 //------------- Click Handlers ----------------//
 void WordClockProgram::ClickHandler(State &state)
 {
-  Serial.println("WordClockProgram: click");
+  debugln("WordClockProgram: click");
 }
 void WordClockProgram::DoubleClickHandler(State &state)
 {
-  Serial.println("WordClockProgram: double click");
+  debugln("WordClockProgram: double click");
 }
 void WordClockProgram::TripleClickHandler(State &state)
 {
-  Serial.println("WordClockProgram: triple click");
+  debugln("WordClockProgram: triple click");
 }
 void WordClockProgram::LongClickHandler(State &state)
 {
-  Serial.println("WordClockProgram: long click");
+  debugln("WordClockProgram: long click");
   state.ActiveProgram = new SetHourProgram();
 }
 
 //------------- Rotary Handlers ----------------//
 void WordClockProgram::RotaryUpHandler(State &state)
 {
-  Serial.println("WordClockProgram: rotary up");
-  state.ChangeBrightness(5);
-  Serial.println(state.GetBrightness());
+  debugln("WordClockProgram: rotary up");
 }
 void WordClockProgram::RotaryDownHandler(State &state)
 {
-  Serial.println("WordClockProgram: rotary down");
-  state.ChangeBrightness(-5);
-  Serial.println(state.GetBrightness());
+  debugln("WordClockProgram: rotary down");
 }
 
 //----------------- Program --------------------//
@@ -43,8 +40,8 @@ void WordClockProgram::Run(State &state)
   EVERY_N_SECONDS(1)
   {
     state.Time_FromRTC();
-    Serial.print(state.Time_GetHour());
-    Serial.print(":");
-    Serial.println(state.Time_GetMin());
+    debug(state.Time_GetHour());
+    debug(":");
+    debugln(state.Time_GetMin());
   }
 }

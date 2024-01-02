@@ -1,7 +1,17 @@
 #ifndef helpers_h
 #define helpers_h
 
-uint16_t XY(uint8_t x, uint8_t y, uint8_t w, uint8_t h)
+#define DEBUG 1
+
+#if DEBUG == 1
+#define debug(x) Serial.print(x)
+#define debugln(x) Serial.println(x)
+#else
+#define debug(x)
+#define debugln(x)
+#endif
+
+inline uint16_t XY(uint8_t x, uint8_t y, uint8_t w, uint8_t h)
 {
   bool serpentine = true;
   uint16_t i;
@@ -34,4 +44,5 @@ uint16_t XY(uint8_t x, uint8_t y, uint8_t w, uint8_t h)
 
   return i;
 }
+
 #endif

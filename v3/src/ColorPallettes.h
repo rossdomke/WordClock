@@ -2,20 +2,20 @@
 #define ColorPalettes_h
 #include "FastLED.h"
 
-DEFINE_GRADIENT_PALETTE(bhw1_06_gp){
+inline DEFINE_GRADIENT_PALETTE(bhw1_06_gp){
     0, 184, 1, 128,
     160, 1, 193, 182,
     219, 153, 227, 190,
     255, 255, 255, 255};
 
-DEFINE_GRADIENT_PALETTE(bhw3_62_gp){
+inline DEFINE_GRADIENT_PALETTE(bhw3_62_gp){
     0, 255, 255, 45,
     43, 208, 93, 1,
     137, 224, 1, 242,
     181, 159, 1, 29,
     255, 63, 4, 68};
 
-DEFINE_GRADIENT_PALETTE(bhw3_01_gp){
+inline DEFINE_GRADIENT_PALETTE(bhw3_01_gp){
     0, 255, 146, 228,
     25, 152, 43, 65,
     48, 36, 17, 22,
@@ -30,7 +30,7 @@ DEFINE_GRADIENT_PALETTE(bhw3_01_gp){
     237, 255, 93, 6,
     255, 244, 244, 0};
 
-DEFINE_GRADIENT_PALETTE(bhw4_029_gp){
+inline DEFINE_GRADIENT_PALETTE(bhw4_029_gp){
     0, 28, 7, 75,
     43, 73, 22, 74,
     79, 177, 146, 197,
@@ -38,7 +38,7 @@ DEFINE_GRADIENT_PALETTE(bhw4_029_gp){
     165, 15, 184, 75,
     255, 224, 205, 4};
 
-DEFINE_GRADIENT_PALETTE(Abstract_3_gp){
+inline DEFINE_GRADIENT_PALETTE(Abstract_3_gp){
     0, 0, 38, 1,
     12, 42, 75, 8,
     111, 255, 125, 30,
@@ -53,7 +53,7 @@ DEFINE_GRADIENT_PALETTE(Abstract_3_gp){
     252, 2, 213, 45,
     255, 0, 255, 0};
 
-DEFINE_GRADIENT_PALETTE(Abstract_2_gp){
+inline DEFINE_GRADIENT_PALETTE(Abstract_2_gp){
     0, 255, 0, 1,
     85, 229, 9, 50,
     145, 206, 44, 245,
@@ -68,7 +68,7 @@ DEFINE_GRADIENT_PALETTE(Abstract_2_gp){
     252, 73, 23, 255,
     255, 6, 6, 255};
 
-DEFINE_GRADIENT_PALETTE(gr65_hult_gp){
+inline DEFINE_GRADIENT_PALETTE(gr65_hult_gp){
     0, 247, 176, 247,
     48, 255, 136, 255,
     89, 220, 29, 226,
@@ -76,35 +76,35 @@ DEFINE_GRADIENT_PALETTE(gr65_hult_gp){
     216, 1, 124, 109,
     255, 1, 124, 109};
 
-DEFINE_GRADIENT_PALETTE(magenta_blue){
+inline DEFINE_GRADIENT_PALETTE(magenta_blue){
     0, 255, 0, 125,
     75, 0, 100, 255,
     150, 255, 0, 125,
     255, 0, 100, 255};
 
-DEFINE_GRADIENT_PALETTE(seafoam){
+inline DEFINE_GRADIENT_PALETTE(seafoam){
     0, 0, 255, 255,
     75, 0, 255, 100,
     150, 0, 50, 200,
     255, 100, 255, 255};
-DEFINE_GRADIENT_PALETTE(sunrise){
+inline DEFINE_GRADIENT_PALETTE(sunrise){
     0, 255, 150, 0,
     50, 255, 255, 0,
     120, 100, 0, 200,
     180, 25, 0, 200,
     255, 255, 255, 255};
-DEFINE_GRADIENT_PALETTE(red_orange){
+inline DEFINE_GRADIENT_PALETTE(red_orange){
     0, 255, 0, 0,
     75, 255, 150, 0,
     150, 255, 50, 0,
     255, 255, 255, 0};
 
-CRGBPalette16 palettes[] = {
+inline CRGBPalette16 ColorPalettes[] = {
+    Rainbow_gp,
     red_orange,
     sunrise,
     seafoam,
     magenta_blue,
-    Rainbow_gp,
     gr65_hult_gp,
     Abstract_3_gp,
     Abstract_2_gp,
@@ -113,9 +113,9 @@ CRGBPalette16 palettes[] = {
     bhw3_01_gp,
     bhw4_029_gp};
 
-uint8_t GetRandomPaletteIndex()
+inline uint8_t GetRandomPaletteIndex()
 {
-  return random(0, sizeof(palettes) / sizeof(CRGBPalette16));
+    return random(0, sizeof(ColorPalettes) / sizeof(CRGBPalette16));
 }
 
 #endif

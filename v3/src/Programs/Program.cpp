@@ -1,33 +1,34 @@
 #include "Program.h"
 #include "../../State.h"
+#include "../helpers.h"
 #include <Arduino.h>
 
 //------------- Click Handlers ----------------//
 void Program::ClickHandler(State &state)
 {
-  Serial.println("program: click");
+  debugln("program: click");
 }
 void Program::DoubleClickHandler(State &state)
 {
-  Serial.println("program: double click");
+  debugln("program: double click");
 }
 void Program::TripleClickHandler(State &state)
 {
-  Serial.println("program: triple click");
+  debugln("program: triple click");
 }
 void Program::LongClickHandler(State &state)
 {
-  Serial.println("program: long click");
+  debugln("program: long click");
 }
 
 //------------- Rotary Handlers ----------------//
 void Program::RotaryUpHandler(State &state)
 {
-  Serial.print("program: rotary up: ");
+  debugln("program: rotary up: ");
 }
 void Program::RotaryDownHandler(State &state)
 {
-  Serial.print("program: rotary down: ");
+  debugln("program: rotary down: ");
 }
 
 //----------------- Program --------------------//

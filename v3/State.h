@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include <DS3231.h>
 #include <Wire.h>
+#include <FastLED.h>
+#include "src/ColorAnimations.h"
 
 class Program;
 class CRGB;
@@ -27,8 +29,13 @@ public:
   uint8_t Time_GetHour();
   uint8_t Time_GetMin();
   uint8_t GetFrame();
+  uint8_t GetStepSize();
   uint8_t GetWidth();
   uint8_t GetHeight();
+  ColorAnimationFunc GetColorAnimation();
+  void SetColorAnimation(int8_t);
+  CRGBPalette16 GetColorPalette();
+  void SetColorPalette(int8_t);
 
   // Computed Getters
   uint8_t GetNumOfLEDs();
@@ -36,7 +43,6 @@ public:
   // Functions
   void AdvanceFrame();
 
-  // GetColorAnimation
   // SetColorAnimation
 private:
   uint8_t Brightness;
