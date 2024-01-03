@@ -33,9 +33,9 @@ public:
   uint8_t GetWidth();
   uint8_t GetHeight();
   ColorAnimationFunc GetColorAnimation();
-  void SetColorAnimation(int8_t);
+  uint8_t SetColorAnimation(int8_t);
   CRGBPalette16 GetColorPalette();
-  void SetColorPalette(int8_t);
+  uint8_t SetColorPalette(int8_t);
 
   // Computed Getters
   uint8_t GetNumOfLEDs();

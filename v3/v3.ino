@@ -11,15 +11,15 @@
 #include "src/ColorPallettes.h"
 
 FASTLED_USING_NAMESPACE
-#define WIDTH 3
-#define HEIGHT 3
+#define WIDTH 11
+#define HEIGHT 11
 
 const int P_ENC_BTN = 9;
 const int P_ENC_A = 8;
 const int P_ENC_B = 7;
 const int P_SCL = 5;
 const int P_SDA = 4;
-const int P_LED = 10;
+const int P_LED = 0;
 
 Button2 BtnEnc;
 RotaryEncoder *Encoder = nullptr;
@@ -39,7 +39,7 @@ void setup()
 
   // BtnEnc Setup
   BtnEnc.begin(P_ENC_BTN, INPUT_PULLUP, false);
-  attachInterrupt(digitalPinToInterrupt(P_ENC_BTN), BtnEncInterupt, CHANGE);
+  // attachInterrupt(digitalPinToInterrupt(P_ENC_BTN), BtnEncInterupt, CHANGE);
   // BtnEnc Handlers
   BtnEnc.setClickHandler(BtnEnc_ClickHandler);
   BtnEnc.setDoubleClickHandler(BtnEnc_DoubleClickHandler);
@@ -51,12 +51,14 @@ void setup()
 
   // Rotary Encoder Setup
   Encoder = new RotaryEncoder(P_ENC_A, P_ENC_B, RotaryEncoder::LatchMode::FOUR3);
-  attachInterrupt(digitalPinToInterrupt(P_ENC_A), RotaryInterupt, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(P_ENC_B), RotaryInterupt, CHANGE);
+  // attachInterrupt(digitalPinToInterrupt(P_ENC_A), RotaryInterupt, CHANGE);
+  // attachInterrupt(digitalPinToInterrupt(P_ENC_B), RotaryInterupt, CHANGE);
 
   AppState = new State(WIDTH, HEIGHT, leds, mask, &rtc);
 
   // Setup FastLED
+  // FastLED.addLeds<WS2812B, P_LED, GRB>(AppState->LEDs, AppState->GetNumOfLEDs()).setCorrection(TypicalLEDStrip);
+  
   FastLED.addLeds<WS2812B, P_LED, GRB>(AppState->LEDs, AppState->GetNumOfLEDs()).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(AppState->GetBrightness());
 }
@@ -67,30 +69,32 @@ ulong milliDiff = 0;
 void loop()
 {
   BtnEnc.loop();
+  RotaryInterupt();
   EVERY_N_MILLISECONDS(50)
   {
     AppState->AdvanceFrame();
-  }
-  beforeMillis = millis();
-  AppState->ActiveProgram->Run(*AppState);
-  ColorAnimationFunc clrAnimation = AppState->GetColorAnimation();
-  CRGBPalette16 palette = AppState->GetColorPalette();
-  for (uint8_t x = 0; x < AppState->GetWidth(); x++)
-  {
-    for (uint8_t y = 0; y < AppState->GetHeight(); y++)
+
+    beforeMillis = millis();
+    AppState->ActiveProgram->Run(*AppState);
+    ColorAnimationFunc clrAnimation = AppState->GetColorAnimation();
+    CRGBPalette16 palette = AppState->GetColorPalette();
+    for (uint8_t x = 0; x < AppState->GetWidth(); x++)
     {
-      // AppState->LEDs[XY(x, y, AppState->GetWidth(), AppState->GetHeight())] = CHSV(AppState->GetFrame() + x * 50 + y * 50, 255, 255);
-      AppState->LEDs[XY(x, y, AppState->GetWidth(), AppState->GetHeight())] = clrAnimation(palette, AppState->GetFrame(), AppState->GetStepSize(), x, y);
+      for (uint8_t y = 0; y < AppState->GetHeight(); y++)
+      {
+        // AppState->LEDs[XY(x, y, AppState->GetWidth(), AppState->GetHeight())] = CHSV(AppState->GetFrame() + x * 50 + y * 50, 255, 255);
+        AppState->LEDs[XY(x, y, AppState->GetWidth(), AppState->GetHeight())] = clrAnimation(palette, AppState->GetFrame(), AppState->GetStepSize(), x, y);
+      }
     }
-  }
-  FastLED.setBrightness(AppState->GetBrightness());
-  FastLED.show();
-  afterMillis = millis();
-  if (afterMillis - beforeMillis > 100)
-  {
-    debug("!!!WARNING!!! Active Program took too long: ");
-    debug(afterMillis - beforeMillis);
-    debugln("ms");
+    FastLED.setBrightness(AppState->GetBrightness());
+    FastLED.show();
+    afterMillis = millis();
+    if (afterMillis - beforeMillis > 100)
+    {
+      debug("!!!WARNING!!! Active Program took too long: ");
+      debug(afterMillis - beforeMillis);
+      debugln("ms");
+    }
   }
 }
 

@@ -5,6 +5,7 @@
 #include <FastLED.h>
 
 #include "SetHourProgram.h"
+#include "SetBrightnessProgram.h"
 //------------- Click Handlers ----------------//
 void WordClockProgram::ClickHandler(State &state)
 {
@@ -13,6 +14,7 @@ void WordClockProgram::ClickHandler(State &state)
 void WordClockProgram::DoubleClickHandler(State &state)
 {
   debugln("WordClockProgram: double click");
+  state.ActiveProgram = new SetBrightnessProgram();
 }
 void WordClockProgram::TripleClickHandler(State &state)
 {

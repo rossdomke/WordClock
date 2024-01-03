@@ -1,6 +1,9 @@
 #ifndef helpers_h
 #define helpers_h
 
+#define MAX_BRIGHTNESS 100
+#define MIN_BRIGHTNESS 10
+
 #define DEBUG 1
 
 #if DEBUG == 1

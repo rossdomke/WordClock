@@ -4,12 +4,14 @@
 #include "src/Programs/WordClockProgram.h"
 #include "src/ColorAnimations.h"
 #include "src/ColorPallettes.h"
+#include "src/helpers.h"
 
+#include "src/Programs/SetColorProgram.h"
 State::State(uint8_t width, uint8_t height, CRGB *leds, bool *mask, DS3231 *rtc)
 {
   Width = width;
   Height = height;
-  Brightness = 100;
+  Brightness = MAX_BRIGHTNESS;
   Mask = mask;
   LEDs = leds;
   RealTimeClock = rtc;
@@ -18,7 +20,7 @@ State::State(uint8_t width, uint8_t height, CRGB *leds, bool *mask, DS3231 *rtc)
   Frame = 0;
   ColorAnimationIdx = 0;
   PaletteIdx = 0;
-  ActiveProgram = new WordClockProgram();
+  ActiveProgram = new SetColorProgram();
 }
 
 uint8_t State::GetBrightness()
@@ -27,6 +29,14 @@ uint8_t State::GetBrightness()
 }
 void State::ChangeBrightness(int8_t amount)
 {
+  if (Brightness + amount < MIN_BRIGHTNESS && amount < 0)
+  {
+    return;
+  }
+  if (Brightness + amount > MAX_BRIGHTNESS && amount > 0)
+  {
+    return;
+  }
   Brightness = Brightness + amount;
 }
 
@@ -93,47 +103,29 @@ ColorAnimationFunc State::GetColorAnimation()
   return ColorAnimations[ColorAnimationIdx];
 }
 
-void State::SetColorAnimation(int8_t direction)
+uint8_t State::SetColorAnimation(int8_t direction)
 {
   uint8_t maxIdx = sizeof(ColorAnimations) / sizeof(ColorAnimationFunc);
-  if (direction < 0)
-  {
-    if (ColorAnimationIdx == 0)
-    {
-      ColorAnimationIdx = maxIdx;
-    }
-    else
-    {
-      ColorAnimationIdx -= direction;
-    }
-  }
-  else
-  {
-    ColorAnimationIdx += direction;
-    ColorAnimationIdx = ColorAnimationIdx % maxIdx;
-  }
+  if (direction < 0 && ColorAnimationIdx == 0)
+    ColorAnimationIdx = maxIdx;
+
+  ColorAnimationIdx += direction;
+  ColorAnimationIdx = ColorAnimationIdx % maxIdx;
+
+  return ColorAnimationIdx;
 }
 CRGBPalette16 State::GetColorPalette()
 {
   return ColorPalettes[PaletteIdx];
 }
-void State::SetColorPalette(int8_t direction)
+uint8_t State::SetColorPalette(int8_t direction)
 {
   uint8_t maxIdx = sizeof(ColorPalettes) / sizeof(CRGBPalette16);
-  if (direction < 0)
-  {
-    if (PaletteIdx == 0)
-    {
-      PaletteIdx = maxIdx;
-    }
-    else
-    {
-      PaletteIdx -= direction;
-    }
-  }
-  else
-  {
-    PaletteIdx += direction;
-    PaletteIdx = PaletteIdx % maxIdx;
-  }
+  if (direction < 0 && PaletteIdx == 0)
+    PaletteIdx = maxIdx;
+
+  PaletteIdx += direction;
+  PaletteIdx = PaletteIdx % maxIdx;
+
+  return PaletteIdx;
 }
