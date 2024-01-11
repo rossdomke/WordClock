@@ -13,9 +13,10 @@ class CRGB;
 class State
 {
 public:
-  State(uint8_t, uint8_t, CRGB *, bool *, DS3231 *);
+  State(uint8_t, uint8_t, CRGB *, bool *, bool *, DS3231 *);
   Program *ActiveProgram;
-  bool *Mask;
+  bool *OnMask;
+  bool *ColorMask;
   CRGB *LEDs;
   DS3231 *RealTimeClock;
 
@@ -36,6 +37,11 @@ public:
   uint8_t SetColorAnimation(int8_t);
   CRGBPalette16 GetColorPalette();
   uint8_t SetColorPalette(int8_t);
+
+  // Mask Functions
+  void SetMaskRange(bool *, uint8_t, uint8_t, uint8_t, uint8_t, bool);
+  void SetOnMaskRange(uint8_t, uint8_t, uint8_t, uint8_t, bool);
+  void SetClrMaskRange(uint8_t, uint8_t, uint8_t, uint8_t, bool);
 
   // Computed Getters
   uint8_t GetNumOfLEDs();

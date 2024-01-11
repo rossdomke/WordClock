@@ -7,12 +7,15 @@
 #include "src/helpers.h"
 
 #include "src/Programs/SetColorProgram.h"
-State::State(uint8_t width, uint8_t height, CRGB *leds, bool *mask, DS3231 *rtc)
+State::State(uint8_t width, uint8_t height, CRGB *leds, bool *onMask, bool *clrMask, DS3231 *rtc)
 {
   Width = width;
   Height = height;
   Brightness = MAX_BRIGHTNESS;
-  Mask = mask;
+  OnMask = onMask;
+  ColorMask = clrMask;
+  SetOnMaskRange(0, 10, 0, 10, true);
+  SetClrMaskRange(0, 10, 0, 10, false);
   LEDs = leds;
   RealTimeClock = rtc;
   Speed = 2;
@@ -20,7 +23,7 @@ State::State(uint8_t width, uint8_t height, CRGB *leds, bool *mask, DS3231 *rtc)
   Frame = 0;
   ColorAnimationIdx = 0;
   PaletteIdx = 0;
-  ActiveProgram = new SetColorProgram();
+  ActiveProgram = new WordClockProgram();
 }
 
 uint8_t State::GetBrightness()
@@ -128,4 +131,22 @@ uint8_t State::SetColorPalette(int8_t direction)
   PaletteIdx = PaletteIdx % maxIdx;
 
   return PaletteIdx;
+}
+void State::SetMaskRange(bool *mask, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, bool on)
+{
+  for (uint8_t o = x1; o <= x2; o++)
+  {
+    for (uint8_t i = y1; i <= y2; i++)
+    {
+      mask[XY(o, i, Width, Height)] = on;
+    }
+  }
+}
+void State::SetOnMaskRange(uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, bool on)
+{
+  SetMaskRange(OnMask, x1, x2, y1, y2, on);
+}
+void State::SetClrMaskRange(uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, bool on)
+{
+  SetMaskRange(ColorMask, x1, x2, y1, y2, on);
 }

@@ -9,6 +9,7 @@
 #include "src/Helpers.h"
 #include "src/ColorAnimations.h"
 #include "src/ColorPallettes.h"
+#include "src/CharacterMasks.h"
 
 FASTLED_USING_NAMESPACE
 #define WIDTH 11
@@ -16,16 +17,17 @@ FASTLED_USING_NAMESPACE
 
 const int P_ENC_BTN = 9;
 const int P_ENC_A = 8;
-const int P_ENC_B = 7;
+const int P_ENC_B = 10;
 const int P_SCL = 5;
 const int P_SDA = 4;
-const int P_LED = 0;
+const int P_LED = 3;
 
 Button2 BtnEnc;
 RotaryEncoder *Encoder = nullptr;
 State *AppState = nullptr;
 CRGB leds[WIDTH * HEIGHT];
-bool mask[WIDTH * HEIGHT];
+bool onMask[WIDTH * HEIGHT];
+bool clrMask[WIDTH * HEIGHT];
 DS3231 rtc;
 
 void setup()
@@ -54,11 +56,11 @@ void setup()
   // attachInterrupt(digitalPinToInterrupt(P_ENC_A), RotaryInterupt, CHANGE);
   // attachInterrupt(digitalPinToInterrupt(P_ENC_B), RotaryInterupt, CHANGE);
 
-  AppState = new State(WIDTH, HEIGHT, leds, mask, &rtc);
+  AppState = new State(WIDTH, HEIGHT, leds, onMask, clrMask, &rtc);
 
   // Setup FastLED
   // FastLED.addLeds<WS2812B, P_LED, GRB>(AppState->LEDs, AppState->GetNumOfLEDs()).setCorrection(TypicalLEDStrip);
-  
+
   FastLED.addLeds<WS2812B, P_LED, GRB>(AppState->LEDs, AppState->GetNumOfLEDs()).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(AppState->GetBrightness());
 }
@@ -76,14 +78,19 @@ void loop()
 
     beforeMillis = millis();
     AppState->ActiveProgram->Run(*AppState);
+    // Color Animation
     ColorAnimationFunc clrAnimation = AppState->GetColorAnimation();
     CRGBPalette16 palette = AppState->GetColorPalette();
     for (uint8_t x = 0; x < AppState->GetWidth(); x++)
     {
       for (uint8_t y = 0; y < AppState->GetHeight(); y++)
       {
-        // AppState->LEDs[XY(x, y, AppState->GetWidth(), AppState->GetHeight())] = CHSV(AppState->GetFrame() + x * 50 + y * 50, 255, 255);
-        AppState->LEDs[XY(x, y, AppState->GetWidth(), AppState->GetHeight())] = clrAnimation(palette, AppState->GetFrame(), AppState->GetStepSize(), x, y);
+        uint16_t ledIdx = XY(x, y, AppState->GetWidth(), AppState->GetHeight());
+        if (!AppState->ColorMask[ledIdx])
+          AppState->LEDs[ledIdx] = clrAnimation(palette, AppState->GetFrame(), AppState->GetStepSize(), x, y);
+
+        if (!AppState->OnMask[ledIdx])
+          AppState->LEDs[ledIdx].fadeToBlackBy(255);
       }
     }
     FastLED.setBrightness(AppState->GetBrightness());
