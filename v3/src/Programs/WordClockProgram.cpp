@@ -6,10 +6,14 @@
 
 #include "SetHourProgram.h"
 #include "SetBrightnessProgram.h"
+#include "../CharacterMasks.h"
+
 //------------- Click Handlers ----------------//
 void WordClockProgram::ClickHandler(State &state)
 {
+
   debugln("WordClockProgram: click");
+  DisplaySmallAlpha(state.OnMask, CharIdx::A, 0, 0);
 }
 void WordClockProgram::DoubleClickHandler(State &state)
 {
@@ -35,7 +39,6 @@ void WordClockProgram::RotaryDownHandler(State &state)
 {
   debugln("WordClockProgram: rotary down");
 }
-
 //----------------- Program --------------------//
 void WordClockProgram::Run(State &state)
 {
