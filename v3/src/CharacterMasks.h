@@ -309,7 +309,13 @@ inline SmallCharacter SmallAlphabet[26] = {
         B111,
     },
     // J
-    {B111, B001, B001, B101, B011},
+    {
+        B111,
+        B001,
+        B001,
+        B101,
+        B011,
+    },
     // K
     {
         B101,
@@ -439,15 +445,35 @@ inline SmallCharacter SmallAlphabet[26] = {
         B111,
     },
 };
-inline void DisplaySmallChar(bool *mask, SmallCharacter sChar, uint8_t startx, uint8_t startY)
+inline byte *SmallCharToArr(SmallCharacter sChar)
 {
-    debug("Char Line1: ");
-    debugBIN(sChar.l1);
-    debugln("");
+    static byte charArr[5] = {
+        sChar.l1,
+        sChar.l2,
+        sChar.l3,
+        sChar.l4,
+        sChar.l5,
+    };
+    return charArr;
+}
+inline void DisplaySmallChar(bool *mask, SmallCharacter sChar, uint8_t startX, uint8_t startY)
+{
+    byte *charArr = SmallCharToArr(sChar);
+    for (uint8_t i = 0; i < 5; i++)
+    {
+        byte line = charArr[i];
+        for (uint8_t o = 0; o < 3; o++)
+        {
+            bool on = (line >> (2 - o)) & 0x01;
+            mask[XY(startX + o, startY + i, 11, 11)] = on;
+        }
+    }
 }
 inline void DisplaySmallAlpha(bool *mask, CharIdx charIdx, uint8_t startX, uint8_t startY)
 {
-    SmallCharacter sChar = SmallAlphabet[charIdx];
+    debug("- ");
+    debug(charIdx);
+    SmallCharacter sChar = SmallAlphabet[(int)charIdx];
     DisplaySmallChar(mask, sChar, startX, startY);
 }
 inline void DisplaySmallNum(bool *mask, uint8_t num, uint8_t startX, uint8_t startY)
