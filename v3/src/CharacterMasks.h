@@ -206,35 +206,38 @@ inline SmallCharacter SmallNumbers[10] = {
         B011,
     },
 };
-enum CharIdx
+namespace CharMask
 {
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-    P,
-    Q,
-    R,
-    S,
-    T,
-    U,
-    V,
-    W,
-    X,
-    Y,
-    Z
-};
+    enum CharIdx
+    {
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G,
+        H,
+        I,
+        J,
+        K,
+        L,
+        M,
+        N,
+        O,
+        P,
+        Q,
+        R,
+        S,
+        T,
+        U,
+        V,
+        W,
+        X,
+        Y,
+        Z
+    };
+}
 inline SmallCharacter SmallAlphabet[26] = {
     // A
     {
@@ -248,7 +251,7 @@ inline SmallCharacter SmallAlphabet[26] = {
     {
         B110,
         B101,
-        B111,
+        B110,
         B101,
         B110,
     },
@@ -310,17 +313,17 @@ inline SmallCharacter SmallAlphabet[26] = {
     },
     // J
     {
-        B111,
+        B001,
         B001,
         B001,
         B101,
-        B011,
+        B010,
     },
     // K
     {
         B101,
+        B101,
         B110,
-        B100,
         B110,
         B101,
     },
@@ -350,11 +353,11 @@ inline SmallCharacter SmallAlphabet[26] = {
     },
     // O
     {
-        B111,
+        B010,
         B101,
         B101,
         B101,
-        B111,
+        B010,
     },
     // P
     {
@@ -384,7 +387,7 @@ inline SmallCharacter SmallAlphabet[26] = {
     {
         B011,
         B100,
-        B011,
+        B010,
         B001,
         B110,
     },
@@ -409,7 +412,7 @@ inline SmallCharacter SmallAlphabet[26] = {
         B101,
         B101,
         B101,
-        B111,
+        B101,
         B010,
     },
     // W
@@ -445,20 +448,16 @@ inline SmallCharacter SmallAlphabet[26] = {
         B111,
     },
 };
-inline byte *SmallCharToArr(SmallCharacter sChar)
+
+inline void DisplaySmallChar(bool *mask, SmallCharacter &sChar, uint8_t startX, uint8_t startY)
 {
-    static byte charArr[5] = {
+    byte charArr[5] = {
         sChar.l1,
         sChar.l2,
         sChar.l3,
         sChar.l4,
         sChar.l5,
     };
-    return charArr;
-}
-inline void DisplaySmallChar(bool *mask, SmallCharacter sChar, uint8_t startX, uint8_t startY)
-{
-    byte *charArr = SmallCharToArr(sChar);
     for (uint8_t i = 0; i < 5; i++)
     {
         byte line = charArr[i];
@@ -469,11 +468,9 @@ inline void DisplaySmallChar(bool *mask, SmallCharacter sChar, uint8_t startX, u
         }
     }
 }
-inline void DisplaySmallAlpha(bool *mask, CharIdx charIdx, uint8_t startX, uint8_t startY)
+inline void DisplaySmallAlpha(bool *mask, uint8_t charIdx, uint8_t startX, uint8_t startY)
 {
-    debug("- ");
-    debug(charIdx);
-    SmallCharacter sChar = SmallAlphabet[(int)charIdx];
+    SmallCharacter sChar = SmallAlphabet[charIdx];
     DisplaySmallChar(mask, sChar, startX, startY);
 }
 inline void DisplaySmallNum(bool *mask, uint8_t num, uint8_t startX, uint8_t startY)
