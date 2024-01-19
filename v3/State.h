@@ -31,6 +31,9 @@ public:
   uint8_t Time_GetMin();
   uint8_t GetFrame();
   uint8_t GetStepSize();
+  uint8_t ChangeStepSize(int8_t);
+  uint8_t GetSpeed();
+  uint8_t ChangeSpeed(int8_t);
   uint8_t GetWidth();
   uint8_t GetHeight();
   ColorAnimationFunc GetColorAnimation();
@@ -48,9 +51,13 @@ public:
 
   // Functions
   void AdvanceFrame();
+  void ReadStateFromMemory();
+  void WriteStateToMemory();
+  void PrintStateValues();
 
-  // SetColorAnimation
 private:
+  bool NeedSave;
+  unsigned long LastStateUpdate;
   uint8_t Brightness;
   uint8_t PaletteIdx;
   uint8_t ColorAnimationIdx;
@@ -60,5 +67,7 @@ private:
   uint8_t Width;
   uint8_t Height;
   uint16_t Time;
+
+  void StateUpdated();
 };
 #endif

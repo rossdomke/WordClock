@@ -1,4 +1,6 @@
 #include <FastLED.h>
+#include <Arduino.h>
+#include <FlashStorage_SAMD.h>
 
 #include "State.h"
 #include "src/Programs/WordClockProgram.h"
@@ -7,6 +9,7 @@
 #include "src/helpers.h"
 
 #include "src/Programs/SetColorProgram.h"
+
 State::State(uint8_t width, uint8_t height, CRGB *leds, bool *onMask, bool *clrMask, DS3231 *rtc)
 {
   Width = width;
@@ -24,6 +27,94 @@ State::State(uint8_t width, uint8_t height, CRGB *leds, bool *onMask, bool *clrM
   ColorAnimationIdx = 0;
   PaletteIdx = 0;
   ActiveProgram = new WordClockProgram();
+  NeedSave = false;
+  Time_FromRTC();
+  // ReadStateFromMemory();
+}
+
+void State::ReadStateFromMemory()
+{
+  debugln("read state");
+  Serial.println(BOARD_NAME);
+  Serial.println(FLASH_STORAGE_SAMD_VERSION);
+  debug("EEPROM Length: ");
+  debugln(EEPROM.length());
+  uint8_t test = EEPROM.read(EEPROM_ADDR_COLOR);
+  debug("value in color: ");
+  debugln(test);
+
+  // Check if EEPROM is initialized
+  if (EEPROM.read(EEPROM_ADDR_INIT_VECT_1) == EEPROM_VAL_INIT_VECT_1 &&
+      EEPROM.read(EEPROM_ADDR_INIT_VECT_2) == EEPROM_VAL_INIT_VECT_2 &&
+      EEPROM.read(EEPROM_ADDR_INIT_VECT_3) == EEPROM_VAL_INIT_VECT_3 &&
+      EEPROM.read(EEPROM_ADDR_INIT_VECT_4) == EEPROM_VAL_INIT_VECT_4 &&
+      EEPROM.read(EEPROM_ADDR_INIT_VECT_5) == EEPROM_VAL_INIT_VECT_5)
+  {
+    debugln("EEPROM initialized, reading state from flash memory.");
+    ColorAnimationIdx = EEPROM.read(EEPROM_ADDR_ANIMATION) % (sizeof(ColorAnimations) / sizeof(ColorAnimationFunc));
+    Brightness = EEPROM.read(EEPROM_ADDR_BRIGHTNESS) % MAX_BRIGHTNESS;
+    PaletteIdx = EEPROM.read(EEPROM_ADDR_COLOR) % (sizeof(ColorPalettes) / sizeof(CRGBPalette16));
+    StepSize = EEPROM.read(EEPROM_ADDR_FRAMESTEP) % MAX_STEPSIZE;
+    Speed = EEPROM.read(EEPROM_ADDR_SPEED) % MAX_SPEED;
+  }
+  else
+  {
+    debugln("Initializing EEPROM");
+    // EEPROM.update(EEPROM_ADDR_ANIMATION, ColorAnimationIdx);
+    // EEPROM.update(EEPROM_ADDR_BRIGHTNESS, Brightness);
+    // EEPROM.update(EEPROM_ADDR_COLOR, PaletteIdx);
+    // EEPROM.update(EEPROM_ADDR_FRAMESTEP, StepSize);
+    // EEPROM.update(EEPROM_ADDR_SPEED, Speed);
+    EEPROM.update(EEPROM_ADDR_INIT_VECT_1, EEPROM_VAL_INIT_VECT_1);
+    EEPROM.update(EEPROM_ADDR_INIT_VECT_2, EEPROM_VAL_INIT_VECT_2);
+    EEPROM.update(EEPROM_ADDR_INIT_VECT_3, EEPROM_VAL_INIT_VECT_3);
+    EEPROM.update(EEPROM_ADDR_INIT_VECT_4, EEPROM_VAL_INIT_VECT_4);
+    EEPROM.update(EEPROM_ADDR_INIT_VECT_5, EEPROM_VAL_INIT_VECT_5);
+    StateUpdated();
+  }
+}
+const unsigned long SaveThreshold = 1000 * 60 * 1; // check save every 1 minute
+void State::WriteStateToMemory()
+{
+  if (NeedSave && (millis() - LastStateUpdate) > SaveThreshold)
+  {
+    debugln("Saving EEPROM");
+    EEPROM.update(EEPROM_ADDR_ANIMATION, ColorAnimationIdx);
+    EEPROM.update(EEPROM_ADDR_BRIGHTNESS, Brightness);
+    EEPROM.update(EEPROM_ADDR_COLOR, PaletteIdx);
+    EEPROM.update(EEPROM_ADDR_FRAMESTEP, StepSize);
+    EEPROM.update(EEPROM_ADDR_SPEED, Speed);
+    EEPROM.commit();
+  }
+  else if (NeedSave)
+  {
+    debug("Too Soon to save: ");
+    debug(millis() - LastStateUpdate);
+    debug(" threshold: ");
+    debugln(SaveThreshold);
+  }
+}
+
+void State::PrintStateValues()
+{
+  debugln("--------STATE VALUES--------");
+  debug("Color Animation Index: ");
+  debugln(ColorAnimationIdx);
+  debug("Brightness: ");
+  debugln(Brightness);
+  debug("Color Palette Index: ");
+  debugln(PaletteIdx);
+  debug("Frame Step Size: ");
+  debugln(StepSize);
+  debug("Frame Speed: ");
+  debugln(Speed);
+  debugln("=============================");
+}
+
+void State::StateUpdated()
+{
+  NeedSave = true;
+  LastStateUpdate = millis();
 }
 
 uint8_t State::GetBrightness()
@@ -40,6 +131,7 @@ void State::ChangeBrightness(int8_t amount)
   {
     return;
   }
+  StateUpdated();
   Brightness = Brightness + amount;
 }
 
@@ -101,6 +193,38 @@ uint8_t State::GetStepSize()
 {
   return StepSize;
 }
+uint8_t State::ChangeStepSize(int8_t amount)
+{
+  if (StepSize + amount < MIN_STEPSIZE && amount < 0)
+  {
+    return StepSize;
+  }
+  if (StepSize + amount > MAX_STEPSIZE && amount > 0)
+  {
+    return StepSize;
+  }
+  StateUpdated();
+  StepSize += amount;
+  return StepSize;
+}
+uint8_t State::GetSpeed()
+{
+  return Speed;
+}
+uint8_t State::ChangeSpeed(int8_t amount)
+{
+  if (Speed + amount < MIN_SPEED && amount < 0)
+  {
+    return Speed;
+  }
+  if (Speed + amount > MAX_SPEED && amount > 0)
+  {
+    return Speed;
+  }
+  Speed += amount;
+  StateUpdated();
+  return Speed;
+}
 ColorAnimationFunc State::GetColorAnimation()
 {
   return ColorAnimations[ColorAnimationIdx];
@@ -114,7 +238,7 @@ uint8_t State::SetColorAnimation(int8_t direction)
 
   ColorAnimationIdx += direction;
   ColorAnimationIdx = ColorAnimationIdx % maxIdx;
-
+  StateUpdated();
   return ColorAnimationIdx;
 }
 CRGBPalette16 State::GetColorPalette()
@@ -129,7 +253,7 @@ uint8_t State::SetColorPalette(int8_t direction)
 
   PaletteIdx += direction;
   PaletteIdx = PaletteIdx % maxIdx;
-
+  StateUpdated();
   return PaletteIdx;
 }
 void State::SetMaskRange(bool *mask, uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2, bool on)

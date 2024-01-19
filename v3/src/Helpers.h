@@ -4,12 +4,34 @@
 #define MAX_BRIGHTNESS 100
 #define MIN_BRIGHTNESS 10
 
+#define MAX_SPEED 50
+#define MIN_SPEED 1
+
+#define MAX_STEPSIZE 30
+#define MIN_STEPSIZE 1
+
+#define EEPROM_ADDR_BRIGHTNESS 0
+#define EEPROM_ADDR_FRAMESTEP 1
+#define EEPROM_ADDR_ANIMATION 2
+#define EEPROM_ADDR_COLOR 3
+#define EEPROM_ADDR_SPEED 4
+#define EEPROM_ADDR_INIT_VECT_1 6
+#define EEPROM_ADDR_INIT_VECT_2 7
+#define EEPROM_ADDR_INIT_VECT_3 8
+#define EEPROM_ADDR_INIT_VECT_4 9
+#define EEPROM_ADDR_INIT_VECT_5 10
+#define EEPROM_VAL_INIT_VECT_1 69
+#define EEPROM_VAL_INIT_VECT_2 4
+#define EEPROM_VAL_INIT_VECT_3 20
+#define EEPROM_VAL_INIT_VECT_4 110
+#define EEPROM_VAL_INIT_VECT_5 254
+
 #define DEBUG 1
 
 #if DEBUG == 1
 #define debug(x) Serial.print(x)
 #define debugln(x) Serial.println(x)
-#define debugBIN(x) Serial.print(x, BIN)
+#define debugBIN(x) Serial.println(x, BIN)
 #else
 #define debug(x)
 #define debugln(x)

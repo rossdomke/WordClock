@@ -3,14 +3,19 @@
 #include "../helpers.h"
 #include <Arduino.h>
 
+#include "SetSpeedProgram.h"
+#include "WordClockProgram.h"
+#include "FunimationProgram.h"
 //------------- Click Handlers ----------------//
 void SetStepSizeProgram::ClickHandler(State &state)
 {
   debugln("SetStepSizeProgram: click");
+  state.ActiveProgram = new SetSpeedProgram();
 }
 void SetStepSizeProgram::DoubleClickHandler(State &state)
 {
   debugln("SetStepSizeProgram: double click");
+  state.ActiveProgram = new FunimationProgram();
 }
 void SetStepSizeProgram::TripleClickHandler(State &state)
 {
@@ -19,16 +24,22 @@ void SetStepSizeProgram::TripleClickHandler(State &state)
 void SetStepSizeProgram::LongClickHandler(State &state)
 {
   debugln("SetStepSizeProgram: long click");
+  state.ActiveProgram = new WordClockProgram();
 }
 
 //------------- Rotary Handlers ----------------//
 void SetStepSizeProgram::RotaryUpHandler(State &state)
 {
-  debugln("SetStepSizeProgram: rotary up: ");
+  state.ChangeStepSize(1);
+  debug("SetStepSizeProgram: rotary up: ");
+  debugln(state.GetStepSize());
+
 }
 void SetStepSizeProgram::RotaryDownHandler(State &state)
 {
-  debugln("SetStepSizeProgram: rotary down: ");
+  state.ChangeStepSize(-1);
+  debug("SetStepSizeProgram: rotary down: ");
+  debugln(state.GetStepSize());
 }
 
 //----------------- SetStepSizeProgram --------------------//
