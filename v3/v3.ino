@@ -72,6 +72,10 @@ void loop()
 {
   BtnEnc.loop();
   RotaryInterupt();
+  EVERY_N_MINUTES(1)
+  {
+    AppState->WriteStateToMemory();
+  }
   EVERY_N_MILLISECONDS(50)
   {
     AppState->AdvanceFrame();

@@ -1,10 +1,10 @@
 #ifndef helpers_h
 #define helpers_h
 
-#define MAX_BRIGHTNESS 100
-#define MIN_BRIGHTNESS 10
+#define MAX_BRIGHTNESS 150
+#define MIN_BRIGHTNESS 25
 
-#define MAX_SPEED 50
+#define MAX_SPEED 15
 #define MIN_SPEED 1
 
 #define MAX_STEPSIZE 30
@@ -26,7 +26,7 @@
 #define EEPROM_VAL_INIT_VECT_4 110
 #define EEPROM_VAL_INIT_VECT_5 254
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG == 1
 #define debug(x) Serial.print(x)

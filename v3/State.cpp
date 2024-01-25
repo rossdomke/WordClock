@@ -3,46 +3,41 @@
 #include <FlashStorage_SAMD.h>
 
 #include "State.h"
-#include "src/Programs/WordClockProgram.h"
 #include "src/ColorAnimations.h"
 #include "src/ColorPallettes.h"
 #include "src/helpers.h"
 
-#include "src/Programs/SetColorProgram.h"
+#include "src/Programs/WordClockProgram.h"
+// #include "src/Programs/SetBrightnessProgram.h"
+// #include "src/Programs/SetColorProgram.h"
+// #include "src/Programs/SetTimeProgram.h"
+// #include "src/Programs/SetAnimationProgram.h"
+// #include "src/Programs/SetSpeedProgram.h"
 
 State::State(uint8_t width, uint8_t height, CRGB *leds, bool *onMask, bool *clrMask, DS3231 *rtc)
 {
   Width = width;
   Height = height;
-  Brightness = MAX_BRIGHTNESS;
+  Brightness = 100;
   OnMask = onMask;
   ColorMask = clrMask;
-  SetOnMaskRange(0, 10, 0, 10, true);
+  SetOnMaskRange(0, 10, 0, 10, false);
   SetClrMaskRange(0, 10, 0, 10, false);
   LEDs = leds;
   RealTimeClock = rtc;
   Speed = 2;
-  StepSize = 30;
+  StepSize = 15;
   Frame = 0;
   ColorAnimationIdx = 0;
   PaletteIdx = 0;
   ActiveProgram = new WordClockProgram();
   NeedSave = false;
   Time_FromRTC();
-  // ReadStateFromMemory();
+  ReadStateFromMemory();
 }
 
 void State::ReadStateFromMemory()
 {
-  debugln("read state");
-  Serial.println(BOARD_NAME);
-  Serial.println(FLASH_STORAGE_SAMD_VERSION);
-  debug("EEPROM Length: ");
-  debugln(EEPROM.length());
-  uint8_t test = EEPROM.read(EEPROM_ADDR_COLOR);
-  debug("value in color: ");
-  debugln(test);
-
   // Check if EEPROM is initialized
   if (EEPROM.read(EEPROM_ADDR_INIT_VECT_1) == EEPROM_VAL_INIT_VECT_1 &&
       EEPROM.read(EEPROM_ADDR_INIT_VECT_2) == EEPROM_VAL_INIT_VECT_2 &&
@@ -73,7 +68,7 @@ void State::ReadStateFromMemory()
     StateUpdated();
   }
 }
-const unsigned long SaveThreshold = 1000 * 60 * 1; // check save every 1 minute
+const unsigned long SaveThreshold = 1000 * 60 * 5; // check save every 5 minute
 void State::WriteStateToMemory()
 {
   if (NeedSave && (millis() - LastStateUpdate) > SaveThreshold)
@@ -85,13 +80,18 @@ void State::WriteStateToMemory()
     EEPROM.update(EEPROM_ADDR_FRAMESTEP, StepSize);
     EEPROM.update(EEPROM_ADDR_SPEED, Speed);
     EEPROM.commit();
+    NeedSave = false;
   }
   else if (NeedSave)
   {
-    debug("Too Soon to save: ");
-    debug(millis() - LastStateUpdate);
+    debug("Too Soon to save EEPROM: ");
+    debug((millis() - LastStateUpdate) / 1000);
     debug(" threshold: ");
-    debugln(SaveThreshold);
+    debugln(SaveThreshold / 1000);
+  }
+  else
+  {
+    debug("No EEPROM save needed");
   }
 }
 
@@ -173,11 +173,16 @@ uint8_t State::GetNumOfLEDs()
 void State::AdvanceFrame()
 {
   Frame += Speed;
+  StaticFrame += 1;
 }
 
 uint8_t State::GetFrame()
 {
   return Frame;
+}
+uint8_t State::GetStaticFrame()
+{
+  return StaticFrame;
 }
 
 uint8_t State::GetWidth()

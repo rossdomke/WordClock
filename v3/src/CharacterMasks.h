@@ -127,24 +127,24 @@ struct SmallCharacter
 inline SmallCharacter SmallNumbers[10] = {
     // 0
     {
-        B111,
+        B010,
         B101,
         B101,
         B101,
-        B111,
+        B010,
     },
     // 1
     {
-        B110,
         B010,
         B010,
         B010,
-        B111,
+        B010,
+        B010,
     },
     // 2
     {
-        B010,
-        B101,
+        B110,
+        B001,
         B010,
         B100,
         B111,
@@ -179,7 +179,7 @@ inline SmallCharacter SmallNumbers[10] = {
         B100,
         B110,
         B101,
-        B111,
+        B110,
     },
     // 7
     {
@@ -449,7 +449,7 @@ inline SmallCharacter SmallAlphabet[26] = {
     },
 };
 
-inline void DisplaySmallChar(bool *mask, SmallCharacter &sChar, uint8_t startX, uint8_t startY)
+inline void DisplaySmallChar(bool *mask, SmallCharacter &sChar, uint8_t startX, uint8_t startY, bool turnOn)
 {
     byte charArr[5] = {
         sChar.l1,
@@ -464,19 +464,19 @@ inline void DisplaySmallChar(bool *mask, SmallCharacter &sChar, uint8_t startX, 
         for (uint8_t o = 0; o < 3; o++)
         {
             bool on = (line >> (2 - o)) & 0x01;
-            mask[XY(startX + o, startY + i, 11, 11)] = on;
+            mask[XY(startX + o, startY + i, 11, 11)] = on == turnOn;
         }
     }
 }
-inline void DisplaySmallAlpha(bool *mask, uint8_t charIdx, uint8_t startX, uint8_t startY)
+inline void DisplaySmallAlpha(bool *mask, uint8_t charIdx, uint8_t startX, uint8_t startY, bool turnOn)
 {
     SmallCharacter sChar = SmallAlphabet[charIdx];
-    DisplaySmallChar(mask, sChar, startX, startY);
+    DisplaySmallChar(mask, sChar, startX, startY, turnOn);
 }
-inline void DisplaySmallNum(bool *mask, uint8_t num, uint8_t startX, uint8_t startY)
+inline void DisplaySmallNum(bool *mask, uint8_t num, uint8_t startX, uint8_t startY, bool turnOn)
 {
     SmallCharacter sChar = SmallNumbers[num];
-    DisplaySmallChar(mask, sChar, startX, startY);
+    DisplaySmallChar(mask, sChar, startX, startY, turnOn);
 }
 
 #endif

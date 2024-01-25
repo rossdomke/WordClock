@@ -1,12 +1,22 @@
-#ifndef SetHourProgram_h
-#define SetHourProgram_h
+#ifndef SetTimeProgram_h
+#define SetTimeProgram_h
 #include "Program.h"
 class State;
-
-class SetHourProgram : public Program
+namespace SetTime
+{
+  enum Mode
+  {
+    SetHour,
+    SetMin
+  };
+}
+class SetTimeProgram : public Program
 {
 public:
-  SetHourProgram(){};
+  SetTimeProgram()
+  {
+    Mode = SetTime::Mode::SetHour;
+  };
   virtual void ClickHandler(State &);
   virtual void DoubleClickHandler(State &);
   virtual void TripleClickHandler(State &);
@@ -14,5 +24,8 @@ public:
   virtual void RotaryUpHandler(State &);
   virtual void RotaryDownHandler(State &);
   virtual void Run(State &);
+
+private:
+  SetTime::Mode Mode;
 };
 #endif

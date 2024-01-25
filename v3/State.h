@@ -30,6 +30,7 @@ public:
   uint8_t Time_GetHour();
   uint8_t Time_GetMin();
   uint8_t GetFrame();
+  uint8_t GetStaticFrame();
   uint8_t GetStepSize();
   uint8_t ChangeStepSize(int8_t);
   uint8_t GetSpeed();
@@ -64,6 +65,7 @@ private:
   uint8_t StepSize;
   uint8_t Speed;
   uint8_t Frame;
+  uint8_t StaticFrame;
   uint8_t Width;
   uint8_t Height;
   uint16_t Time;
